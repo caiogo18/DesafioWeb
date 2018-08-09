@@ -1,5 +1,6 @@
 <template>
     <div class="informacao">
+        <h2>Respostas:</h2>
         <div>
             <p>{{nome}}</p>
         </div>
@@ -43,5 +44,8 @@ export default {
     margin-bottom: 40px;
     font-size: 2rem;
     align-items: center;
+}
+.informacao h2{
+    color: black;
 }
 </style>

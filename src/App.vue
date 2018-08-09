@@ -41,7 +41,10 @@
       </div>
       <div class="respostas" v-if="started">
       <Info :nome="nome" :email="email" :idade="idade" :celular="celular" :senha="senha" :confirmarSenha="confirmarSenha" />
+    
     </div>
+    <input type="checkbox" id="checkbox" value="true" v-model="checkBoxStatus">
+    <label for="checkbox">Retirar validações de Input</label>
       <button v-if="!started" v-on:click="mensagemErro">Enviar</button>
       <button v-if="started" @click="started = false">Reiniciar</button>
     </div>
@@ -65,49 +68,67 @@ export default {
         }
       }
       return true;
-  },
+    },
     mensagemErro: function(){
       var erros = 0;
-      if(this.nome.length>20){
-        this.nomeErro = "*Preencha com até 20 caracteres alfabéticos[a-z].";
-        erros++;
-      }
-      else if(this.nome.length==0){
-        this.nomeErro = "*Esse campo precisa ser preenchido.";
-        erros++;
-      }
-      if(this.idade==null){
-        this.idadeErro = "*Esse campo precisa ser preenchido.";
-        erros++;
-      }
-      else if(this.idade>60 || this.idade<0){
-        this.idadeErro = "*Preencha com uma idade válida";
-        erros++;
-      }
-      if(this.celular==null){
-        this.celularErro = "*Esse campo precisa ser preenchido.";
-        erros++;
-      }
-      else if(!(this.celular>10000000000 && this.celular<100000000000)){
-        this.celularErro = "*Preencha sem símbolos e com o número do ddd Ex:21912345678";
-        erros++;
-      }
-      if(this.email==null){
-        this.emailErro = "*Esse campo precisa ser preenchido.";
-        erros++;
-      }
-      if(this.senha==null){
-        this.senhaErro = "*Esse campo precisa ser preenchido.";
-        erros++;
-      }
-      if(this.confirmarSenha!=this.senha){
-        this.confirmarErro = "*As senhas não correspondem.";
-        erros++;
+      this.nomeErro = "";
+      this.idadeErro = "";
+      this.celularErro = "";
+      this.emailErro = "";
+      this.senhaErro = "";
+      this.confirmarErro = "";
+      if(this.checkBoxStatus==false){
+        if(this.nome.length>20){
+         this.nomeErro = "*Preencha com até 20 caracteres alfabéticos[a-z].";
+          erros++;
+        }
+        else if(this.nome.length==0){
+          this.nomeErro = "*Esse campo precisa ser preenchido.";
+          erros++;
+       }
+        if(this.idade==null){
+          this.idadeErro = "*Esse campo precisa ser preenchido.";
+          erros++;
+        }
+        else if(this.idade>60 || this.idade<0){
+          this.idadeErro = "*Preencha com uma idade válida";
+          erros++;
+        }
+        if(this.celular==null){
+          this.celularErro = "*Esse campo precisa ser preenchido.";
+          erros++;
+        }
+        else if(!(this.celular>10000000000 && this.celular<100000000000)){
+          this.celularErro = "*Preencha sem símbolos e com o número do ddd Ex:21912345678";
+          erros++;
+        }
+        if(this.email==null){
+          this.emailErro = "*Esse campo precisa ser preenchido.";
+          erros++;
+        }
+        if(this.senha==null){
+          this.senhaErro = "*Esse campo precisa ser preenchido.";
+          erros++;
+        }
+        if(this.confirmarSenha!=this.senha){
+          this.confirmarErro = "*As senhas não correspondem.";
+          erros++;
+        }
       }
       if(erros==0){
-        this.started = true;
+          this.started = true;
       }
+      return
     }
+  },
+  resetErro: function(){
+    this.nomeErro = "";
+    this.idadeErro = "";
+    this.celularErro = "";
+    this.emailErro = "";
+    this.senhaErro = "";
+    this.confirmarErro = "";
+    return
   },
   data: function() {
     return {
@@ -124,12 +145,10 @@ export default {
       emailErro: null,
       senhaErro: null,
       confirmarErro: null,
+      checkBoxStatus: false
 
     }
   }
-
-
-
 }
 </script>
 <style>
