@@ -16,7 +16,7 @@
             <p>{{senha}}</p>
         </div>
         <div>
-            <p>{{checarSenha}}</p>
+            <p>{{confirmarSenha}}</p>
         </div>
     </div>
 </template>
@@ -30,7 +30,7 @@ export default {
       idade: null,
       celular: null,
       senha: null,
-      checarSenha: null
+      confirmarSenha: null
   }
 }
 </script>
