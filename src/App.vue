@@ -2,50 +2,48 @@
   <div id="app">
     <div class="title"><strong>Cadastro</strong></div>
     <div class="form">
-      <div v-if="!started">
-        <label for="nome"><strong>Nome: </strong></label><br/>
-        <input type="text" id="nome" 
-          v-model.trim="nome"
-          title="deu ruim">
-        <div class="erro" v-if="nomeErro!=null" >{{nomeErro}}</div>
+      <div v-if="!started" :class="{error: errors.has('nome')}">
+        <label><strong>Nome:</strong></label><br/>
+        <input type="text" name="nome"  
+        v-validate="!checkBoxStatus ? 'required|alpha_spaces|max:20' : ''" v-model="nome"><br/>
+        <span class="error" v-if="errors.has('nome')">Só pode conter 20 letras do alfabeto.</span>
       </div>
-      <div v-if="!started">
+      <div v-if="!started" :class="{error: errors.has('email')}">
         <label for="email"><strong>E-mail:</strong></label><br/>
-        <input type="text" id="email" 
-          v-model.trim="email">
-        <div class="erro" v-if="emailErro!=null" >{{emailErro}}</div>
+        <input type="text" name="email" 
+        v-validate="!checkBoxStatus ? 'required|email' : ''" v-model="email"><br/>
+        <span class="error" v-if="errors.has('email')">Preencha o campo com e-mail válido.</span>
       </div>
-      <div v-if="!started">
+      <div v-if="!started" :class="{error: errors.has('idade')}">
         <label for="idade"><strong>Idade:</strong></label><br/>
-        <input type="number" id="idade" 
-          v-model.number="idade">
-        <div class="erro" v-if="idadeErro!=null" >{{idadeErro}}</div>
+        <input type="text" name="idade" v-validate="!checkBoxStatus ?'required|min_value:0|max_value:60' : ''" v-model.number="idade"><br/>
+        <span class="error" v-if="errors.has('idade')">Preencha o campo com idade até 60 anos.</span>
       </div>
-      <div v-if="!started">
-        <label for="celular"><strong>Celular: </strong></label><br/>
-        <input type="text" id="celular" 
-          v-model.trim="celular">
-        <div class="erro" v-if="celularErro!=null" >{{celularErro}}</div>
+      <div v-if="!started" :class="{error: errors.has('celular')}">
+        <label for="celular"><strong>Celular:</strong></label><br/>
+        <input type="text" name="celular" v-validate="!checkBoxStatus ?'required|digits:11' : ''" v-model.number="celular"><br/>
+        <span class="error" v-if="errors.has('celular')">Preencha o campo com um celular válido.</span>
       </div>
-      <div v-if="!started">
-        <label for="senha"><strong>Senha: </strong></label><br/>
-        <input type="password" id="senha" 
-          v-model.trim="senha">
-        <div class="erro" v-if="senhaErro!=null" >{{senhaErro}}</div>
-      </div>
-      <div v-if="!started">
-        <label for="checarSenha"><strong>Confirmar Senha: </strong></label><br/>
-        <input type="password" id="checarSenha" 
-          v-model.trim="confirmarSenha">
-        <div class="erro" v-if="confirmarErro!=null" >{{confirmarErro}}</div>
+      <div v-if="!started" :class="{error: errors.has('senha')}">
+        <label for="senha"><strong>Senha:</strong></label><br/>
+        <input type="password" name="senha" 
+        v-validate="!checkBoxStatus ? 'required|min:8|max:16' : ''" v-model.number="senha" ref="senha"><br/>
+        <span class="error" v-if="errors.has('senha')">Preencha o campo com uma senha de 8 a 16 digítos.</span>
+      </div><div v-if="!started" :class="{error: errors.has('confirmarSenha')}">
+        <label for="confirmarSenha"><strong>Confirmar Senha:</strong></label><br/>
+        <input type="password" name="confirmarSenha" 
+        v-validate="!checkBoxStatus ?'required|confirmed:senha' : ''" v-model.number="confirmarSenha"><br/>
+        <span class="error" v-if="errors.has('confirmarSenha')">As senhas não conferem.</span>
       </div>
       <div class="respostas" v-if="started">
       <Info :nome="nome" :email="email" :idade="idade" :celular="celular" :senha="senha" :confirmarSenha="confirmarSenha" />
     
     </div>
-    <input type="checkbox" id="checkbox" value="true" v-model="checkBoxStatus">
-    <label for="checkbox">Retirar validações de Input</label>
-      <button v-if="!started" v-on:click="mensagemErro">Enviar</button>
+    <div v-if="!started">
+      <input type="checkbox" id="checkbox" value="true" v-model="checkBoxStatus">
+      <label for="checkbox">Retirar validações de Input</label>
+    </div>
+      <button v-if="!started" v-on:click="conferirRespostas">Enviar</button>
       <button v-if="started" @click="started = false">Reiniciar</button>
     </div>
 
@@ -55,96 +53,33 @@
 
 <script>
 import Info from './components/Info'
+import VeeValidate from 'vee-validate';
 export default {
   name: 'App',
   components: { Info },
   methods: {
-    onlyLetters: function(){
-    var i;
-    var vStr = this.nome.split
-      for(i=0;i< vStr.length;i++){
-        if(!(vStr[i]>='A'&&vStr[i]<='Z')||(vStr[i]>='a'&&vStr[i]<='z')) { 
-          return false; 
+    conferirRespostas: function(){
+      this.$validator.validateAll().then(() => {
+        if(this.errors.any()){
+          this.started = false
+          return 
         }
-      }
-      return true;
-    },
-    mensagemErro: function(){
-      var erros = 0;
-      this.nomeErro = "";
-      this.idadeErro = "";
-      this.celularErro = "";
-      this.emailErro = "";
-      this.senhaErro = "";
-      this.confirmarErro = "";
-      if(this.checkBoxStatus==false){
-        if(this.nome.length>20){
-         this.nomeErro = "*Preencha com até 20 caracteres alfabéticos[a-z].";
-          erros++;
+        else{
+          this.started = true
+          return
         }
-        else if(this.nome.length==0){
-          this.nomeErro = "*Esse campo precisa ser preenchido.";
-          erros++;
-       }
-        if(this.idade==null){
-          this.idadeErro = "*Esse campo precisa ser preenchido.";
-          erros++;
-        }
-        else if(this.idade>60 || this.idade<0){
-          this.idadeErro = "*Preencha com uma idade válida";
-          erros++;
-        }
-        if(this.celular==null){
-          this.celularErro = "*Esse campo precisa ser preenchido.";
-          erros++;
-        }
-        else if(!(this.celular>10000000000 && this.celular<100000000000)){
-          this.celularErro = "*Preencha sem símbolos e com o número do ddd Ex:21912345678";
-          erros++;
-        }
-        if(this.email==null){
-          this.emailErro = "*Esse campo precisa ser preenchido.";
-          erros++;
-        }
-        if(this.senha==null){
-          this.senhaErro = "*Esse campo precisa ser preenchido.";
-          erros++;
-        }
-        if(this.confirmarSenha!=this.senha){
-          this.confirmarErro = "*As senhas não correspondem.";
-          erros++;
-        }
-      }
-      if(erros==0){
-          this.started = true;
-      }
-      return
+      })
     }
-  },
-  resetErro: function(){
-    this.nomeErro = "";
-    this.idadeErro = "";
-    this.celularErro = "";
-    this.emailErro = "";
-    this.senhaErro = "";
-    this.confirmarErro = "";
-    return
   },
   data: function() {
     return {
       started: false,
-      nome: "",
+      nome: null,
       email: null,
       idade: null,
       celular: null,
       senha: null,
       confirmarSenha: null,
-      nomeErro: null,
-      idadeErro: null,
-      celularErro: null,
-      emailErro: null,
-      senhaErro: null,
-      confirmarErro: null,
       checkBoxStatus: false
 
     }
@@ -194,7 +129,7 @@ body{
   color: #fff;
   padding: 10px
 }
-.erro{
+.error span{
   color: red;
   font-size: 1rem
 }
