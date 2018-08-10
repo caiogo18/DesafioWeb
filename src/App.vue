@@ -1,12 +1,13 @@
 <template>
   <div id="app">
-    <div class="title"><strong>Cadastro</strong></div>
-    <div class="form">
+    <div class="p-3 mb-5 bg-secondary text-white">
+      <strong>Cadastro</strong></div>
+    <div class="d-flex align-items-center flex-column bg-white mb-3 ">
       <div v-if="!started" :class="{error: errors.has('nome')}">
         <label><strong>Nome:</strong></label><br/>
         <input type="text" name="nome"  
         v-validate="!checkBoxStatus ? 'required|alpha_spaces|max:20' : ''" v-model="nome"><br/>
-        <span class="error" v-if="errors.has('nome')">Só pode conter 20 letras do alfabeto.</span>
+        <span class="text-alarm" v-if="errors.has('nome')">Só pode conter 20 letras do alfabeto.</span>
       </div>
       <div v-if="!started" :class="{error: errors.has('email')}">
         <label for="email"><strong>E-mail:</strong></label><br/>
@@ -43,7 +44,8 @@
       <input type="checkbox" id="checkbox" value="true" v-model="checkBoxStatus">
       <label for="checkbox">Retirar validações de Input</label>
     </div>
-      <button v-if="!started" v-on:click="conferirRespostas">Enviar</button>
+      <b-button class="col-md-4 pb-2" v-if="!started" 
+      v-on:click="conferirRespostas" :size="'sm'" :variant="'primary'" >Enviar</b-button>
       <button v-if="started" @click="started = false">Reiniciar</button>
     </div>
 
@@ -53,7 +55,6 @@
 
 <script>
 import Info from './components/Info'
-import VeeValidate from 'vee-validate';
 export default {
   name: 'App',
   components: { Info },
@@ -87,6 +88,7 @@ export default {
 }
 </script>
 <style>
+/*
 *{
   box-sizing: border-box;
   font-family:  sans-serif;
@@ -133,4 +135,5 @@ body{
   color: red;
   font-size: 1rem
 }
+*/
 </style>
