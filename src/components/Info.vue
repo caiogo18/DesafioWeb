@@ -2,37 +2,31 @@
     <div class="informacao">
         <h2>Respostas:</h2>
         <div>
-            <p>{{nome}}</p>
+            <p>{{user.nome}}</p>
         </div>
         <div>
-            <p>{{email}}</p>
+            <p>{{user.email}}</p>
         </div>
         <div>
-            <p>{{idade}}</p>
+            <p>{{user.idade}}</p>
         </div>
         <div>
-            <p>{{celular}}</p>
+            <p>{{user.celular}}</p>
         </div>
         <div>
-            <p>{{senha}}</p>
+            <p>{{user.senha}}</p>
         </div>
         <div>
-            <p>{{confirmarSenha}}</p>
+            <p>{{user.confirmarSenha}}</p>
         </div>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  name: 'App',
-  props: {
-      nome: null,
-      email: null,
-      idade: null,
-      celular: null,
-      senha: null,
-      confirmarSenha: null
-  }
+  computed: mapState([
+    'user']),
 }
 </script>
 

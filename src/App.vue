@@ -5,58 +5,30 @@
     </div>
     <div class="container-fluid" v-if="!started">
       <div class="form-row">
-        <div class="col-12 col-md-6 form-group" :class="{error: errors.has('nome')}">
-          <label><strong>Nome:</strong></label>
-          <input class="form-control" type="text" name="nome"  
-            v-validate="!checkBoxStatus ? 'required|alpha_spaces|max:20' : ''" v-model="nome">
-          <small class="form-text text-danger" v-if="errors.has('nome')">
-            Só pode conter 20 letras do alfabeto.
-          </small>
-        </div>
-        <div class="col-12 col-md-6 form-group"  :class="{error: errors.has('email')}">
-          <label for="email"><strong>E-mail:</strong></label>
-          <input class="form-control" type="text" name="email" 
-            v-validate="!checkBoxStatus ? 'required|email' : ''" v-model="email">
-          <small class="form-text text-danger" v-if="errors.has('email')">
-            Preencha o campo com e-mail válido.
-          </small>
-        </div>
+        <Input inputName="nome" label="Nome:" type="text" validation="required|alpha_spaces|max:20"
+          errorMessage="Só pode conter 20 letras do alfabeto." size="col-12 col-md-6"
+          :checkBox="checkBoxStatus"/>
+        <Input inputName="email" label="E-mail:" validation="required|email"
+          errorMessage="Preencha o campo com e-mail válido." size="col-12 col-md-6"
+          :checkBox="checkBoxStatus"/>
       </div>
       <div class="form-row">
-        <div class="col-6 col-md-3 form-group"  :class="{error: errors.has('celular')}">
-          <label for="celular"><strong>Celular:</strong></label><br/>
-          <input class="form-control" type="text" name="celular" 
-            v-validate="!checkBoxStatus ?'required|digits:11' : ''" v-model.number="celular">
-          <small class="form-text text-danger" v-if="errors.has('celular')">
-            Preencha o campo com um celular válido.
-          </small>
-        </div>
-        <div class="col-6 col-md-3 form-group"  :class="{error: errors.has('idade')}">
-          <label for="idade"><strong>Idade:</strong></label>
-          <input class="form-control" style="width:90px" type="number" name="idade" 
-            v-validate="!checkBoxStatus ?'required|min_value:0|max_value:60' : ''" v-model.number="idade">
-          <small class="form-text text-danger" v-if="errors.has('idade')">
-            Preencha o campo com idade até 60 anos.
-          </small>
-        </div>
+        <Input inputName="celular" label="Celular:" type="text" validation="required|digits:11"
+          errorMessage="Preencha o campo com um celular válido." size="col-6 col-md-2"
+          :checkBox="checkBoxStatus"/>
+        
+        <Input inputName="idade" label="Idade:" type="number" 
+          validation="required|min_value:0|max_value:60"
+          errorMessage="Preencha o campo com idade até 60 anos." size="col-6 col-md-1"
+          :checkBox="checkBoxStatus"/>
       </div>
       <div class="form-row">
-        <div class="col-12 col-md-6 form-group" :class="{error: errors.has('senha')}">
-          <label for="senha"><strong>Senha:</strong></label>
-          <input class="form-control" type="password" name="senha" 
-            v-validate="!checkBoxStatus ? 'required|min:8|max:16' : ''" v-model.number="senha" ref="senha">
-          <small class="form-text text-danger" v-if="errors.has('senha')">
-            Preencha o campo com uma senha de 8 a 16 digítos.
-          </small>
-        </div>
-        <div class="col-12 col-md-6 form-group"  :class="{error: errors.has('confirmarSenha')}">
-          <label for="confirmarSenha"><strong>Confirmar Senha:</strong></label>
-          <input class="form-control" type="password" name="confirmarSenha" 
-            v-validate="!checkBoxStatus ?'required|confirmed:senha' : ''" v-model.number="confirmarSenha">
-          <small class="form-text text-danger" v-if="errors.has('confirmarSenha')">
-            As senhas não conferem.
-          </small>
-        </div>
+        <Input inputName="senha" label="Senha:" type="password" 
+          validation="required|min:8|max:16" errorMessage="Preencha o campo com uma senha de 8 a 16 digítos. " 
+          size="col-12 col-md-6" :checkBox="checkBoxStatus"/>
+        <Input inputName="confirmarSenha" label="Confirmar Senha:" type="password" 
+          validation="required|confirmed:senha" errorMessage="As senhas não correspondem" 
+          size="col-12 col-md-6" :checkBox="checkBoxStatus"/>
       </div>
       <input type="checkbox" id="checkbox" value="true" v-model="checkBoxStatus">
       <label for="checkbox">Retirar validações de Input</label>
@@ -68,8 +40,7 @@
       </div>
     </div>
     <div class="text-center" v-if="started">
-      <Info :nome="nome" :email="email" :idade="idade" 
-        :celular="celular" :senha="senha" :confirmarSenha="confirmarSenha" />
+      <Info/>
       <b-button class="col-md-2 pb-2 text-center" v-if="started"
         @click="started = false" :size="'sm'" :variant="'primary'">
         Reiniciar
@@ -80,9 +51,13 @@
 
 <script>
 import Info from './components/Info'
+import Input from './components/Input'
+import { mapState } from 'vuex'
 export default {
   name: 'App',
-  components: { Info },
+  components: { Info , Input },
+  computed: mapState([
+    'user']),
   methods: {
     conferirRespostas: function(){
       this.$validator.validateAll().then(() => {
@@ -100,14 +75,7 @@ export default {
   data: function() {
     return {
       started: false,
-      nome: null,
-      email: null,
-      idade: null,
-      celular: null,
-      senha: null,
-      confirmarSenha: null,
       checkBoxStatus: false
-
     }
   }
 }
