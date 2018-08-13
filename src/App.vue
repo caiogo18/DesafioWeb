@@ -1,6 +1,6 @@
 <template>
   <div class="bg-light " id="app">
-    <div class="p-3 mb-5 bg-secondary text-white text-center" >
+    <div class="h1 p-3 mb-5 bg-secondary text-white text-center" >
       <strong>Cadastro</strong>
     </div>
     <div class="container-fluid" v-if="!started">
@@ -34,7 +34,7 @@
       <label for="checkbox">Retirar validações de Input</label>
       <div class="text-center">
         <b-button class="col-md-2 pb-2" 
-            v-on:click="conferirRespostas" :size="'sm'" :variant="'primary'" >
+            v-on:click="buttonHandler" :size="'sm'" :variant="'primary'" >
             Enviar
         </b-button>
       </div>
@@ -59,17 +59,22 @@ export default {
   computed: mapState([
     'user']),
   methods: {
+    buttonHandler: function(){
+      var i = 0
+      var aux = this.$children
+      for(i=0;aux[i]!=null;i++){
+        aux[i].conferirResposta()
+      }
+      setTimeout(this.conferirRespostas,100)
+    },
     conferirRespostas: function(){
-      this.$validator.validateAll().then(() => {
-        if(this.errors.any()){
-          this.started = false
-          return 
-        }
-        else{
-          this.started = true
-          return
-        }
-      })
+      var valid = true
+      var i = 0
+      var aux = this.$children
+      for(i=0;aux[i]!=null;i++){
+        valid=valid&&aux[i].valid
+      }
+      this.started=valid
     }
   },
   data: function() {
